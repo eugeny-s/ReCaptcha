@@ -30,6 +30,11 @@ class ReCaptcha
     {
         return $this->checkAnswer($request->getClientIp(), $request->request->get($challenge), $request->request->get($response));
     }
+    
+    public function bindV2(Request $request, $response = 'recaptcha_response_field')
+    {
+        return $this->checkAnswerV2($request->getClientIp(), $request->request->get($response));
+    }
 
     public function checkAnswer($ip, $challenge, $response)
     {
@@ -61,7 +66,7 @@ class ReCaptcha
         return new Response(false, isset($data[1]) ? $data[1] : null);
     }
 
-    public function checkAnswerV2($response)
+    public function checkAnswerV2($remoteip, $response)
     {
         if ('' === trim($response)) {
             return new Response(false, 'incorrect-captcha-sol');
@@ -70,7 +75,8 @@ class ReCaptcha
         $request = $this->client->post('/recaptcha/api/siteverify');
         $request->addPostFields(array(
             'secret'   => $this->privateKey,
-            'response' => $response
+            'response' => $response,
+            'remoteip' => $remoteip,
         ));
 
         $response = $request->send();
