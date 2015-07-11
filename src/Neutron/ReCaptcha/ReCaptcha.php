@@ -31,7 +31,7 @@ class ReCaptcha
         return $this->checkAnswer($request->getClientIp(), $request->request->get($challenge), $request->request->get($response));
     }
     
-    public function bindV2(Request $request, $response = 'recaptcha_response_field')
+    public function bindV2(Request $request, $response = 'g-recaptcha-response')
     {
         return $this->checkAnswerV2($request->getClientIp(), $request->request->get($response));
     }
